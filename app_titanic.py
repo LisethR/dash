@@ -1,15 +1,12 @@
-# Run this app with `python app.py` and
-# visit http://127.0.0.1:8050/ in your web browser.
-
 from dash import Dash, html, dcc, Input, Output, State, callback_context
 import plotly.express as px
 import pandas as pd
+import numpy as np
 from sklearn.metrics import roc_auc_score
 import dash_bootstrap_components as dbc
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_curve, auc
 from sklearn.datasets import make_classification
-
 
 app = Dash(__name__)
 
@@ -17,10 +14,21 @@ app = Dash(__name__)
 # see https://plotly.com/python/px-arguments/ for more options
 df = pd.read_csv('data/titanic.csv')
 df.Age = round(df.Age, 0)
-df_count = df.groupby(['Age', 'Sex', 'Survived']).count()
-df_count.reset_index(inplace=True)
-df_roc = pd.read_csv('data/data_roc.csv')
+df['age_group'] = np.where(df.Age.values<17, 'younger', 'adult')
+df['Pclass'] = df['Pclass'].astype(str)
 
+df_count = df[['Sex', 'age_group','Survived', 'Pclass']].groupby(['Sex', 'age_group', 'Pclass']).count()
+df_count.reset_index(inplace=True)
+total_people = sum(df_count.Survived)
+
+df_sum = df[['Sex', 'age_group','Survived', 'Pclass']].groupby(['Sex', 'age_group', 'Pclass']).sum()
+df_sum.reset_index(inplace=True)
+total_survived = sum(df_sum.Survived)
+
+df_sum['total'] = df_count.Survived
+df_sum['relative_survived'] = df_sum.Survived/df_count.Survived
+
+df_roc = pd.read_csv('data/data_roc.csv')
 
 # ---------------------------------------------------------------------------------------------------
 # GRAFICA 1
