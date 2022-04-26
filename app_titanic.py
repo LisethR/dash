@@ -45,7 +45,7 @@ fig1.add_shape(
 
 # ---------------------------------------------------------------------------------------------------
 # GRAFICA 2
-fig2 = px.bar(df_count, x="Age", y="PassengerId", color='Sex', barmode='relative', title= 'BAR PLOT')
+fig2 = px.bar(df_count, x="Age", y="PassengerId", color='Sex', barmode='relative', title= 'BAR PLOT Passegers')
 
 
 # ---------------------------------------------------------------------------------------------------
