@@ -17,6 +17,7 @@ df.Age = round(df.Age, 0)
 df['age_group'] = np.where(df.Age.values<17, 'younger', 'adult')
 df['Pclass'] = df['Pclass'].astype(str)
 
+# agrupado por adulto y joven
 df_count = df[['Sex', 'age_group','Survived', 'Pclass']].groupby(['Sex', 'age_group', 'Pclass']).count()
 df_count.reset_index(inplace=True)
 total_people = sum(df_count.Survived)
@@ -25,9 +26,26 @@ df_sum = df[['Sex', 'age_group','Survived', 'Pclass']].groupby(['Sex', 'age_grou
 df_sum.reset_index(inplace=True)
 total_survived = sum(df_sum.Survived)
 
+# solo total de los grupos
 df_sum['total'] = df_count.Survived
 df_sum['relative_survived'] = df_sum.Survived/df_count.Survived
 
+# agrupado por edad puntual
+# agrupado por adulto y joven
+df_count_age = df[['Sex', 'Age','Survived', 'Pclass']].groupby(['Sex', 'Age', 'Pclass']).count()
+df_count_age.reset_index(inplace=True)
+total_people_age = sum(df_count.Survived)
+
+df_sum_age = df[['Sex', 'Age','Survived', 'Pclass']].groupby(['Sex', 'Age', 'Pclass']).sum()
+df_sum_age.reset_index(inplace=True)
+total_survived_age = sum(df_sum.Survived)
+
+# solo total de los grupos
+df_sum_age['total'] = df_count_age.Survived
+df_sum_age['relative_survived'] = df_sum_age.Survived/df_count_age.Survived
+
+
+# estimaciones
 df_roc = pd.read_csv('data/data_roc.csv')
 
 # ---------------------------------------------------------------------------------------------------
@@ -45,7 +63,7 @@ fig1.add_shape(
 
 # ---------------------------------------------------------------------------------------------------
 # GRAFICA 2
-fig2 = px.bar(df_count, x="Age", y="PassengerId", color='Sex', barmode='relative', title= 'BAR PLOT Passegers')
+fig2 = px.bar(df_sum_age, x="Age", y="PassengerId", color='Sex', barmode='relative', title= 'BAR PLOT Passegers')
 
 
 # ---------------------------------------------------------------------------------------------------
